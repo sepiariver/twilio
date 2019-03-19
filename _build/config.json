@@ -3,82 +3,33 @@
     "lowCaseName": "twilio",
     "description": "Twilio integration for MODX CMS.",
     "author": "YJ Tso <info@sepiariver.com>",
-    "version": "0.7.0-dev2",
+    "version": "0.0.1-dev1",
     "package": {
         "elements": {
             "snippets": [{
-                    "name": "twilio.login",
-                    "file": "login.php"
-                },
-                {
-                    "name": "twilio.loggedIn",
-                    "file": "loggedin.php"
-                },
-                {
-                    "name": "twilio.JWTLogin",
-                    "file": "jwtlogin.php"
+                    "name": "twilio.lookup",
+                    "file": "lookup.php"
                 }
             ],
             "plugins": [{
                 "name": "twilio",
                 "file": "twilio.php",
                 "events": [
-                    "OnUserSave",
-                    "OnUserAddToGroup",
-                    "OnUserRemoveFromGroup"
                 ]
             }]
         },
         "systemSettings": [{
-                "key": "domain",
+                "key": "account_sid",
                 "area": "twilio",
                 "value": ""
             },
             {
-                "key": "client_id",
+                "key": "auth_token",
                 "area": "twilio",
                 "value": ""
             },
             {
-                "key": "client_secret",
-                "area": "twilio",
-                "value": ""
-            },
-            {
-                "key": "redirect_uri",
-                "area": "twilio",
-                "value": ""
-            },
-            {
-                "key": "audience",
-                "area": "twilio",
-                "value": ""
-            },
-            {
-                "key": "scope",
-                "area": "twilio",
-                "value": "openid profile email address phone"
-            },
-            {
-                "key": "persist_id_token",
-                "area": "twilio",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "persist_access_token",
-                "area": "twilio",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "persist_refresh_token",
-                "area": "twilio",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "metadata_email_key",
+                "key": "sending_phone",
                 "area": "twilio",
                 "value": ""
             },
@@ -86,58 +37,6 @@
                 "key": "jwt_key",
                 "area": "twilio",
                 "value": ""
-            },
-            {
-                "key": "create_user",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "push_profile",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "pull_profile",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "push_settings",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "pull_settings",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "allowed_push_setting_keys",
-                "area": "sync",
-                "value": ""
-            },
-            {
-                "key": "allowed_pull_setting_keys",
-                "area": "sync",
-                "value": ""
-            },
-            {
-                "key": "sync_user_groups",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
-            },
-            {
-                "key": "create_user_groups",
-                "area": "sync",
-                "type": "combo-boolean",
-                "value": 0
             }
         ]
     },
