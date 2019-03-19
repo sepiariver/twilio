@@ -112,11 +112,18 @@ class Twilio
             unset($options['type']);
         }
 
+        try {
+            $result = $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch($options)->toArray();
+        } catch (Exception $e) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $e->getMessage());
+            return false;
+        }
+
         // @TODO
         if ($save) {
 
         }
-        return $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch($options)->toArray();
+        return $result;
 
     }
 
