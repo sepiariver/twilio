@@ -114,11 +114,35 @@ class Twilio
 
         // @TODO
         if ($save) {
-            
+
         }
         return $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch($options)->toArray();
 
     }
+
+    public function send(string $phoneNumber = '', string $message = '', int $save = 0, string $from = '')
+    {
+        if (empty($phoneNumber) || empty($message)) {
+            return false;
+        }
+
+        try {
+            $result = $this->client->messages->create($phoneNumber, [
+                'from' => (empty($from)) ? $this->getOption('sms_sender') : $from,
+                'body' => $message,
+            ])->toArray();
+        } catch (Exception $e) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, $e->getMessage());
+            return false;
+        }
+
+        // @TODO
+        if ($save) {
+
+        }
+        return $result;
+    }
+
     /**
      * Debugging
      *

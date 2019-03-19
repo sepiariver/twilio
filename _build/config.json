@@ -13,6 +13,9 @@
             "snippets": [{
                 "name": "twilio.lookup",
                 "file": "lookup.php"
+            },{
+                "name": "twilio.send",
+                "file": "send.php"
             }],
             "plugins": [{
                 "name": "twilio",
