@@ -1,0 +1,12 @@
+{
+    "name": "sepiariver/twilio",
+    "description": "Twilio integration for MODX CMS.",
+    "require": {
+        "twilio/sdk": "^5.0"
+    },
+    "license": "GPLv2",
+    "authors": [{
+        "name": "YJ Tso",
+        "email": "info@sepiariver.com"
+    }]
+}

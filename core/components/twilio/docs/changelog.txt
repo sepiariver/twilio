@@ -1,0 +1,47 @@
+Twilio 0.7.0-dev2
+****************
+
+Pre-release dev version.
+** As with all dev releases, updates are mandatory! **
+Patch user sync.
+Add user setting sync.
+Cleanup files.
+Changed some default Settings.
+
+Twilio 0.6.0-dev2
+****************
+
+Pre-release dev version.
+Support for two-way synchronization of Users and User Groups.
+Huge reorganization of codebase.
+Support for JWT login flow with token invalidation table.
+
+Twilio 0.4.0-dev1
+****************
+
+Pre-release dev version.
+Support for manual email verification via Twilio app_metadata
+
+Twilio 0.3.0-dev1
+****************
+
+Pre-release dev version.
+Improved flow for various verification statuses
+Fixed issue on failure to load class
+
+Twilio 0.2.0-dev1
+****************
+
+Pre-release version.
+Better code organization.
+
+Twilio 0.1.0-dev1
+****************
+
+Pre-release version.
+Better login/logout of modUser.
+
+Twilio 0.0.1-dev1
+****************
+
+Initial pre-release version.
