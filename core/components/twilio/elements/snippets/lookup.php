@@ -5,7 +5,7 @@
  * Lookup a phone number
  *
  * OPTIONS:
- * &debug -                 (bool) Enable debug output. Default false
+ * &debug (string) print|log    Enable debug output. Default ''
  *
  * @var modX $modx
  * @var array $scriptProperties
@@ -37,3 +37,28 @@ if (!($twilio instanceof Twilio) || !$twilio->init()) {
     $modx->log(modX::LOG_LEVEL_ERROR, '[twilio.lookup] could not load the required class on line: ' . __LINE__);
     return;
 }
+
+// OPTIONS
+$number = $modx->getOption('number', $scriptProperties, '');
+$country = $modx->getOption('country', $scriptProperties, 'US', true);
+$type = $modx->getOption('type', $scriptProperties, '');
+$errorTpl = $modx->getOption('errorTpl', $scriptProperties, '@INLINE Error looking up number.');
+$successTpl = $modx->getOption('successTpl', $scriptProperties, 'twilio.lookup_result');
+$debug = $modx->getOption('debug', $scriptProperties, '');
+
+if (empty($number)) return $twilio->getChunk($errorTpl, $scriptProperties);
+
+$options = [
+    'countryCode' => $country,
+    'type' => $type,
+];
+$phone_number = $twilio->lookup($number, $options);
+
+if (!empty($debug)) {
+    return $twilio->debug([
+        'debug' => $debug,
+        'result' => $phone_number,
+    ]);
+}
+
+return $twilio->getChunk($successTpl, $phone_number);

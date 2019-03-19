@@ -97,8 +97,28 @@ class Twilio
         return true;
     }
 
+    public function lookup(string $phoneNumber = '', array $options = [], int $save = 0)
+    {
+        if (empty($phoneNumber)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio.lookup requires phoneNumber.');
+            return false;
+        }
+        // Default
+        if (empty($options)) {
+            $options = ['countryCode' => 'US'];
+        }
+        // Allowed Types
+        if (!empty($options['type']) && !in_array($options['type'], ['carrier', 'caller-name'])) {
+            unset($options['type']);
+        }
 
+        // @TODO
+        if ($save) {
+            
+        }
+        return $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch($options)->toArray();
 
+    }
     /**
      * Debugging
      *
