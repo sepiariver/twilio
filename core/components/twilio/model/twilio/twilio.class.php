@@ -23,11 +23,6 @@
 
 class Twilio
 {
-    const STATE_VERIFIED = 'verified';
-    const STATE_USER_NOT_FOUND = 'userNotFound';
-    const STATE_UNVERIFIED_EMAIL = 'unverifiedEmail';
-    const STATE_CANNOT_VERIFY = 'cannotVerify';
-    const SETTING_DOT_REPLACEMENT = '--';
 
     /** @var modX */
     public $modx = null;
@@ -38,8 +33,8 @@ class Twilio
     /** @var array */
     public $options = [];
 
-    /** @var \Twilio\SDK\Twilio  */
-    protected $api = null;
+    /** @var \Twilio\Rest\Client  */
+    protected $client = null;
 
     public function __construct(modX &$modx, array $options = array())
     {
@@ -76,41 +71,27 @@ class Twilio
     }
 
     /**
-     * Create an Twilio & Management instance
+     * Create a Twilio Client instance
      */
     public function init()
     {
         try {
             $config = [
-                'domain' => $this->getSystemSetting('domain', ''),
-                'client_id' => $this->getSystemSetting('client_id', ''),
-                'client_secret' => $this->getSystemSetting('client_secret', ''),
-                'redirect_uri' => $this->getSystemSetting('redirect_uri', ''),
-                'audience' => $this->getSystemSetting('audience', ''),
-                'scope' => $this->getSystemSetting('scope', 'openid profile email address phone'),
-                'persist_id_token' => $this->getSystemSetting('persist_id_token', false),
-                'persist_access_token' => $this->getSystemSetting('persist_access_token', true),
-                'persist_refresh_token' => $this->getSystemSetting('persist_refresh_token', false),
+                'account_sid' => $this->getSystemSetting('account_sid', ''),
+                'auth_token' => $this->getSystemSetting('auth_token', ''),
+                'sending_phone' => $this->getSystemSetting('sending_phone', ''),
+                'jwt_key' => $this->getSystemSetting('jwt_key', ''),
             ];
 
-            $this->api = new Twilio\SDK\Twilio($config);
-
-            $this->authApi = new Twilio\SDK\API\Authentication($config['domain'], $config['client_id'], $config['client_secret']);
-            $credentials = $this->authApi->client_credentials([
-                'audience' => 'https://' . $config['domain'] . '/api/v2/',
-                'scope' => 'read:users read:users_app_metadata update:users update:users_app_metadata',
-            ]);
-            $this->managementApi = new Twilio\SDK\API\Management($credentials['access_token'], $config['domain']);
+            $this->client = new Twilio\Rest\Client($config['account_sid'], $config['auth_token']);
 
         } catch (Exception $e) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $e->getMessage());
         }
 
-        if (!$this->api instanceof Twilio\SDK\Twilio || !$this->managementApi instanceof Twilio\SDK\API\Management) {
-
-            $this->modx->log(modX::LOG_LEVEL_ERROR, '[Twilio] could not load Twilio\SDK\Twilio!');
+        if (!$this->client instanceof Twilio\Rest\Client) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, '[Twilio] could not load Twilio\Rest\Client!');
             return false;
-
         }
 
         return true;
