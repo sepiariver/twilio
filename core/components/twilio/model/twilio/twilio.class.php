@@ -237,7 +237,8 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
             return ($render) ? '' : null;
         }
-        $invalidated = $this->invalidateCallback($id);
+        $obj->set('expires', 1);
+        $invalidated = $obj->save();
         if ($render) {
             $data = $obj->get('data');
             if (!is_array($data)) $data = [];
