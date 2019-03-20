@@ -9,6 +9,9 @@
             "chunks": [{
                 "name": "twilio.lookup_result",
                 "file": "lookup_result.html"
+            },{
+                "name": "twilio.sent_result",
+                "file": "sent_result.html"
             }],
             "snippets": [{
                 "name": "twilio.lookup",

@@ -43,7 +43,7 @@ if ($hook && $hook->formit && is_array($hook->formit->config)) {
     $props = $hook->getValues();
     foreach ($hook->formit->config as $k => $v) {
         if (strpos($k, $twilio->namespace) === 0) {
-            $props[substr($k, strlen($twilio->namespace) + 1)] = $v;
+            $props[substr($k, strlen($twilio->namespace . '.'))] = $v;
         }
     }
     $isFormIt = true;
