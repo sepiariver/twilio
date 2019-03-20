@@ -62,6 +62,7 @@ class Twilio
             'connectorUrl' => $assetsUrl . 'connector.php',
             'jwtLeeway' => 60,
             'jwtKeyMinLength' => 32,
+            'callbackIdLength' => 32,
         ), $options);
 
         $this->modx->addPackage('twilio', $this->options['modelPath'], $dbPrefix);
@@ -166,9 +167,13 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Invalid user to create callback.');
             return null;
         }
+        if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: create callback requires PHP 7.');
+            return null;
+        }
 
         $obj = $this->modx->newObject('TwilioCallbacks', [
-            'id' => bin2hex(random_bytes(64)),
+            'id' => bin2hex(random_bytes($this->options['callbackIdLength'])),
             'data' => $data,
             'tpl' => $tpl,
             'sender_id' => $user_id,
