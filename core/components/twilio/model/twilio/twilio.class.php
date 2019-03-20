@@ -351,7 +351,10 @@ class Twilio
 
             return $chunk->process($phs, $content);
         }
-
+        if ($this->modx->getCount('modChunk', ['name' => $tpl]) !== 1) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: no Chunk with name ' . $tpl);
+            return '';
+        }
         return $this->modx->getChunk($tpl, $phs);
     }
 
