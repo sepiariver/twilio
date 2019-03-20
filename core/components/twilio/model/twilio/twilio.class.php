@@ -98,11 +98,20 @@ class Twilio
         return true;
     }
 
-    public function lookup(string $phoneNumber = '', array $options = [], int $save = 0)
+    /**
+     * Lookup a phone number using Twilio REST API
+     *
+     * @param string $phoneNumber   Phone number to lookup
+     * @param array $options        Array of options
+     * @param boolean $save         Not yet implemented
+     *
+     * @return array|null           Result from API lookup
+     */
+    public function lookup(string $phoneNumber = '', array $options = [], $save = false)
     {
         if (empty($phoneNumber)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio.lookup requires phoneNumber.');
-            return false;
+            return null;
         }
         // Default
         if (empty($options)) {
@@ -117,7 +126,7 @@ class Twilio
             $result = $this->client->lookups->v1->phoneNumbers($phoneNumber)->fetch($options)->toArray();
         } catch (Exception $e) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $e->getMessage());
-            return false;
+            return null;
         }
 
         // @TODO
@@ -128,10 +137,20 @@ class Twilio
 
     }
 
-    public function send(string $phoneNumber = '', string $message = '', int $save = 0, string $from = '')
+    /**
+     * Send SMS using Twilio
+     *
+     * @param string $phoneNumber   Phone number recipient
+     * @param string $message       Message body
+     * @param boolean $save         Not yet implemented
+     * @param string $from          From number override
+     *
+     * @return array|null           Result from send
+     */
+    public function send(string $phoneNumber = '', string $message = '', $save = false, string $from = '')
     {
         if (empty($phoneNumber) || empty($message)) {
-            return false;
+            return null;
         }
 
         try {
@@ -141,7 +160,7 @@ class Twilio
             ])->toArray();
         } catch (Exception $e) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $e->getMessage());
-            return false;
+            return null;
         }
 
         // @TODO
@@ -151,6 +170,15 @@ class Twilio
         return $result;
     }
 
+    /**
+     * Create a callback
+     *
+     * @param array $data           Array of data for callback rendering
+     * @param string $tpl           TPL Chunk name or @INLINE for $this->getChunk()
+     * @param modUser|int $user     User creating callback.
+     *
+     * @return TwilioCallbacks|null Created callback object or null.
+     */
     public function createCallback(array $data = [], string $tpl = '', $user)
     {
         if (empty($data) && empty($tpl)) {
@@ -183,6 +211,41 @@ class Twilio
             return null;
         }
         return $obj;
+    }
+
+    /**
+     * Get a callback
+     *
+     * @param string $id                    ID of callback to retrieve
+     * @param boolean $render               Flag to render or return object
+     * @param string $tpl                   Override TPL passed to $this->getChunk()
+     *
+     * @return TwilioCallbacks|null|string  Result based on render flag.
+     */
+    public function getCallback(string $id, $render = true, string $tpl = '')
+    {
+        if (empty($id)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing callback ID.');
+            return ($render) ? '' : null;
+        }
+        $obj = $this->modx->getObject('TwilioCallbacks', ['id' => $id]);
+        if (!$obj || !($obj instanceof TwilioCallbacks)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
+            return ($render) ? '' : null;
+        }
+        if ($render) {
+            $data = $obj->get('data');
+            if (!is_array($data)) $data = [];
+            if (!empty($tpl)) {
+                return $this->getChunk($tpl, $data);
+            } elseif (!empty($obj->get('tpl'))) {
+                return $this->getChunk($obj->get('tpl'), $data);
+            } else {
+                return '';
+            }
+        }
+        return $obj;
+
     }
 
     /**
