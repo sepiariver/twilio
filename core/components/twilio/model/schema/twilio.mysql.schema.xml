@@ -10,7 +10,11 @@
         <field key="id" dbtype="varchar" precision="255" null="false" phptype="string" />
         <field key="data" dbtype="text" null="false" phptype="json" default="[]" />
         <field key="tpl" dbtype="varchar" precision="255" null="false" phptype="string" default="" />
-        <field key="expires" dbtype="int" precision="20" null="false" phptype="timestamp"  default="0" />
+        <field key="expires" dbtype="timestamp" null="false" phptype="timestamp"  default="CURRENT_TIMESTAMP" />
         <field key="sender_id" dbtype="int" precision="11" attributes="unsigned" null="false" phptype="integer" />
+
+        <index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
+            <column key="id" length="" collation="A" null="false" />
+        </index>
     </object>
 </model>

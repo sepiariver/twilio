@@ -16,7 +16,7 @@ $xpdo_meta_map['TwilioCallbacks']= array (
     'id' => NULL,
     'data' => '[]',
     'tpl' => '',
-    'expires' => 0,
+    'expires' => 'CURRENT_TIMESTAMP',
     'sender_id' => NULL,
   ),
   'fieldMeta' => 
@@ -45,11 +45,10 @@ $xpdo_meta_map['TwilioCallbacks']= array (
     ),
     'expires' => 
     array (
-      'dbtype' => 'int',
-      'precision' => '20',
+      'dbtype' => 'timestamp',
       'null' => false,
       'phptype' => 'timestamp',
-      'default' => 0,
+      'default' => 'CURRENT_TIMESTAMP',
     ),
     'sender_id' => 
     array (
@@ -58,6 +57,25 @@ $xpdo_meta_map['TwilioCallbacks']= array (
       'attributes' => 'unsigned',
       'null' => false,
       'phptype' => 'integer',
+    ),
+  ),
+  'indexes' => 
+  array (
+    'PRIMARY' => 
+    array (
+      'alias' => 'PRIMARY',
+      'primary' => true,
+      'unique' => true,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'id' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
     ),
   ),
 );

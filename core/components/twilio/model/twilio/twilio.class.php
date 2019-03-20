@@ -229,10 +229,12 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing callback ID.');
             return ($render) ? '' : null;
         }
-        $obj = $this->modx->getObject('TwilioCallbacks', [
+        $c = $this->modx->newQuery('TwilioCallbacks');
+        $c->where([
             'id' => $id,
-            'expires:>' => time(),
+            'expires:>' => strftime('%F %T'),
         ]);
+        $obj = $this->modx->getObject('TwilioCallbacks', $c);
         if (!$obj || !($obj instanceof TwilioCallbacks)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
             return ($render) ? '' : null;
