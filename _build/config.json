@@ -50,7 +50,7 @@
         ]
     },
     "database": {
-        "tables": ["TwilioXToken"]
+        "tables": ["TwilioCallbacks"]
     },
     "extensionPackage": {}
 }

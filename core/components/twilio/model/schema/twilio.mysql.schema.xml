@@ -6,6 +6,13 @@
     defaultEngine="InnoDB"
     phpdoc-package="twilio"
     version="1.1">
+    <object class="TwilioCallbacks" table="twilio_callbacks" extends="xPDOObject">
+        <field key="id" dbtype="varchar" precision="255" null="false" phptype="string" />
+        <field key="data" dbtype="text" null="false" phptype="json" default="[]" />
+        <field key="tpl" dbtype="varchar" precision="255" null="false" phptype="string" default="" />
+        <field key="called" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
+        <field key="sender_id" dbtype="int" precision="11" attributes="unsigned" null="false" phptype="integer" />
+    </object>
     <object
         class="TwilioXToken"
         table="twilio_x_tokens"

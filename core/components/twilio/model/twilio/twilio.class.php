@@ -150,6 +150,36 @@ class Twilio
         return $result;
     }
 
+    public function createCallback(array $data = [], string $tpl = '', $user)
+    {
+        if (empty($data) && empty($tpl)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing requirement to create callback.');
+            return null;
+        }
+        if (is_numeric($user)) {
+            $user_id = (int) abs($user);
+        } elseif ($user instanceof modUser) {
+            $user_id = (int) $user->id;
+        } elseif ($this->modx->user instanceof modUser) {
+            $user_id = (int) $this->modx->user->id;
+        } else {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Invalid user to create callback.');
+            return null;
+        }
+
+        $obj = $this->modx->newObject('TwilioCallbacks', [
+            'id' => bin2hex(random_bytes(64)),
+            'data' => $data,
+            'tpl' => $tpl,
+            'sender_id' => $user_id,
+        ]);
+        if (!$obj->save()) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Failed to create callback.');
+            return null;
+        }
+        return $obj;
+    }
+
     /**
      * Debugging
      *
