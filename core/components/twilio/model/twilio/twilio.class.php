@@ -248,6 +248,25 @@ class Twilio
 
     }
 
+    public function invalidateCallback(string $id)
+    {
+        if (empty($id)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing callback ID to invalidate.');
+            return ($render) ? '' : null;
+        }
+        $obj = $this->modx->getObject('TwilioCallbacks', ['id' => $id]);
+        if (!$obj || !($obj instanceof TwilioCallbacks)) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
+            return false;
+        }
+        $obj->set('called', 1);
+        if (!$obj->save()) {
+            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Failed to invalidate callback ID ' . $id);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Debugging
      *
