@@ -8,7 +8,7 @@
  * &debug (string) print|log    Enable debug output. Default ''
  *
  * @var modX $modx
- * @var array $scriptProperties
+ * @var array $props
  *
  * @package Twilio
  * @author @sepiariver <info@sepiariver.com>
@@ -38,15 +38,19 @@ if (!($twilio instanceof Twilio) || !$twilio->init()) {
     return;
 }
 
-// OPTIONS
-$number = $modx->getOption('number', $scriptProperties, '');
-$country = $modx->getOption('country', $scriptProperties, 'US', true);
-$type = $modx->getOption('type', $scriptProperties, '');
-$errorTpl = $modx->getOption('errorTpl', $scriptProperties, '@INLINE Error looking up number.');
-$successTpl = $modx->getOption('successTpl', $scriptProperties, 'twilio.lookup_result');
-$debug = $modx->getOption('debug', $scriptProperties, '');
+/** @var Sterc\FormIt\Hook */
+$formitConfig = ($hook && $hook->formit && is_array($hook->formit->config)) ? $hook->formit->config : [];
+$props = array_merge($formitConfig, $scriptProperties);
 
-if (empty($number)) return $twilio->getChunk($errorTpl, $scriptProperties);
+// OPTIONS
+$number = $modx->getOption('number', $props, '');
+$country = $modx->getOption('country', $props, 'US', true);
+$type = $modx->getOption('type', $props, '');
+$errorTpl = $modx->getOption('errorTpl', $props, '@INLINE Error looking up number.');
+$successTpl = $modx->getOption('successTpl', $props, 'twilio.lookup_result');
+$debug = $modx->getOption('debug', $props, '');
+
+if (empty($number)) return $twilio->getChunk($errorTpl, $props);
 
 $options = [
     'countryCode' => $country,

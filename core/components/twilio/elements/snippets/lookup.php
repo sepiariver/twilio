@@ -8,7 +8,7 @@
  * &debug (string) print|log    Enable debug output. Default ''
  *
  * @var modX $modx
- * @var array $scriptProperties
+ * @var array $props
  *
  * @package Twilio
  * @author @sepiariver <info@sepiariver.com>
@@ -38,15 +38,28 @@ if (!($twilio instanceof Twilio) || !$twilio->init()) {
     return;
 }
 
-// OPTIONS
-$number = $modx->getOption('number', $scriptProperties, '');
-$country = $modx->getOption('country', $scriptProperties, 'US', true);
-$type = $modx->getOption('type', $scriptProperties, '');
-$errorTpl = $modx->getOption('errorTpl', $scriptProperties, '@INLINE Error looking up number.');
-$successTpl = $modx->getOption('successTpl', $scriptProperties, 'twilio.lookup_result');
-$debug = $modx->getOption('debug', $scriptProperties, '');
+/** @var Sterc\FormIt\Hook */
+if ($hook && $hook->formit && is_array($hook->formit->config)) {
+    $props = $hook->getValues();
+    foreach ($hook->formit->config as $k => $v) {
+        if (strpos($k, $twilio->namespace) === 0) {
+            $props[substr($k, strlen($twilio->namespace) + 1)] = $v;
+        }
+    }
+    $isFormIt = true;
+} else {
+    $props = $scriptProperties;
+    $isFormIt = false;
+}
 
-if (empty($number)) return $twilio->getChunk($errorTpl, $scriptProperties);
+// OPTIONS
+$number = $twilio->getOption('number', $props, '');
+$country = $twilio->getOption('country', $props, 'US', true);
+$type = $twilio->getOption('type', $props, '');
+$errorTpl = $twilio->getOption('errorTpl', $props, '@INLINE Error looking up number.');
+$successTpl = $twilio->getOption('successTpl', $props, 'twilio.lookup_result');
+$successPlaceholder = $twilio->getOption('successPlaceholder', $props, 'twilio_output');
+$debug = $twilio->getOption('debug', $props, '');
 
 $options = [
     'countryCode' => $country,
@@ -55,10 +68,22 @@ $options = [
 $phone_number = $twilio->lookup($number, $options);
 
 if (!empty($debug)) {
-    return $twilio->debug([
+    $output = $twilio->debug([
         'debug' => $debug,
         'result' => $phone_number,
     ]);
+    if ($isFormIt) {
+        $hook->addError('twilio', $output);
+        return false;
+    } else {
+        return $output;
+    }
 }
 
-return $twilio->getChunk($successTpl, $phone_number);
+$output = $twilio->getChunk($successTpl, $phone_number);
+if ($isFormIt) {
+    $modx->setPlaceholder($successPlaceholder, $output);
+    return true;
+} else {
+    return $output;
+}
