@@ -56,7 +56,7 @@ if ($hook && $hook->formit && is_array($hook->formit->config)) {
 $number = $twilio->getOption('number', $props, '');
 $country = $twilio->getOption('country', $props, 'US', true);
 $type = $twilio->getOption('type', $props, '');
-$errorTpl = $twilio->getOption('errorTpl', $props, '@INLINE Error looking up number.');
+$errorTpl = $twilio->getOption('errorTpl', $props, '@INLINE Number lookup failed.');
 $successTpl = $twilio->getOption('successTpl', $props, 'twilio.lookup_result');
 $successPlaceholder = $twilio->getOption('successPlaceholder', $props, 'twilio_output');
 $debug = $twilio->getOption('debug', $props, '');
@@ -72,6 +72,16 @@ if (!empty($debug)) {
         'debug' => $debug,
         'result' => $phone_number,
     ]);
+    if ($isFormIt) {
+        $hook->addError('twilio', $output);
+        return false;
+    } else {
+        return $output;
+    }
+}
+
+if (empty($phone_number)) {
+    $output = $twilio->getChunk($errorTpl, $props);
     if ($isFormIt) {
         $hook->addError('twilio', $output);
         return false;
