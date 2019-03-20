@@ -19,6 +19,9 @@
             },{
                 "name": "twilio.send",
                 "file": "send.php"
+            },{
+                "name": "twilio.getCallback",
+                "file": "get_callback.php"
             }],
             "plugins": [{
                 "name": "twilio",

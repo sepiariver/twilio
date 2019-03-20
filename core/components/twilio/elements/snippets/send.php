@@ -57,13 +57,16 @@ $number = $twilio->getOption('number', $props, '');
 $country = $twilio->getOption('country', $props, 'US', true);
 $message = $twilio->getOption('message', $props, '');
 $type = $twilio->getOption('type', $props, '');
-$callbackFields = $twilio->explodeAndClean($twilio->getOption('callbackFields', $props, ''));
-$callbackTpl = $twilio->getOption('callbackTpl', $props, '');
+
 $callbackUrl = $twilio->getOption('callbackUrl', $props, '');
-$callbackLinkTpl = $twilio->getOption('callbackLinkTpl', $props, '@INLINE [[+callback_link]]');
+$callbackFields = $twilio->explodeAndClean($twilio->getOption('callbackFields', $props, ''));
 $callbackGetParam = $twilio->getOption('callbackGetParam', $props, 'cbid', true);
+
+$callbackTpl = $twilio->getOption('callbackTpl', $props, '');
+$callbackLinkTpl = $twilio->getOption('callbackLinkTpl', $props, '@INLINE [[+callback_link]]');
 $errorTpl = $twilio->getOption('errorTpl', $props, '@INLINE Error sending SMS.');
 $successTpl = $twilio->getOption('successTpl', $props, 'twilio.sent_result');
+
 $successPlaceholder = $twilio->getOption('successPlaceholder', $props, 'twilio_output');
 $debug = $twilio->getOption('debug', $props, '');
 
@@ -74,14 +77,13 @@ $options = [
 $phone_number = $twilio->lookup($number, $options);
 
 if (!empty($phone_number['phoneNumber'])) {
-    if (!empty($callbackFields) && (filter_var($callbackUrl, FILTER_VALIDATE_URL) !== false)) {
+    if (filter_var($callbackUrl, FILTER_VALIDATE_URL) !== false) {
         $callbackData = [];
         foreach ($callbackFields as $field) {
             $callbackData[$field] = $twilio->getOption($field, $props, '');
         }
         $callback = $twilio->createCallback($callbackData, $callbackTpl, $modx->user->id);
         if ($callback) {
-            $twilio->invalidateCallback($callback->id);
             parse_str(parse_url($callbackUrl, PHP_URL_QUERY), $query);
             $query[$callbackGetParam] = $callback->id;
             $callbackUrl .= '?' . http_build_query($query);

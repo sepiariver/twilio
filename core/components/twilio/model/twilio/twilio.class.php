@@ -63,6 +63,7 @@ class Twilio
             'jwtLeeway' => 60,
             'jwtKeyMinLength' => 32,
             'callbackIdLength' => 32,
+            'callbackDefaultExpires' => time() + (3 * 24 * 60 * 60), // 3 days
         ), $options);
 
         $this->modx->addPackage('twilio', $this->options['modelPath'], $dbPrefix);
@@ -179,12 +180,8 @@ class Twilio
      *
      * @return TwilioCallbacks|null Created callback object or null.
      */
-    public function createCallback(array $data = [], string $tpl = '', $user)
+    public function createCallback(array $data = [], string $tpl = '', $user, $expires = null)
     {
-        if (empty($data) && empty($tpl)) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing requirement to create callback.');
-            return null;
-        }
         if (is_numeric($user)) {
             $user_id = (int) abs($user);
         } elseif ($user instanceof modUser) {
@@ -199,11 +196,15 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: create callback requires PHP 7.');
             return null;
         }
+        if ($expires === null) {
+            $expires = $this->options['callbackDefaultExpires'];
+        }
 
         $obj = $this->modx->newObject('TwilioCallbacks', [
             'id' => bin2hex(random_bytes($this->options['callbackIdLength'])),
             'data' => $data,
             'tpl' => $tpl,
+            'expires' => $expires,
             'sender_id' => $user_id,
         ]);
         if (!$obj->save()) {
@@ -222,20 +223,25 @@ class Twilio
      *
      * @return TwilioCallbacks|null|string  Result based on render flag.
      */
-    public function getCallback(string $id, $render = true, string $tpl = '')
+    public function getCallback(string $id, string $tpl = '', $render = true)
     {
         if (empty($id)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing callback ID.');
             return ($render) ? '' : null;
         }
-        $obj = $this->modx->getObject('TwilioCallbacks', ['id' => $id]);
+        $obj = $this->modx->getObject('TwilioCallbacks', [
+            'id' => $id,
+            'expires:>' => time(),
+        ]);
         if (!$obj || !($obj instanceof TwilioCallbacks)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
             return ($render) ? '' : null;
         }
+        $invalidated = $this->invalidateCallback($id);
         if ($render) {
             $data = $obj->get('data');
             if (!is_array($data)) $data = [];
+            $data['invalidated'] = $invalidated;
             if (!empty($tpl)) {
                 return $this->getChunk($tpl, $data);
             } elseif (!empty($obj->get('tpl'))) {
@@ -259,7 +265,7 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
             return false;
         }
-        $obj->set('called', 1);
+        $obj->set('expires', 1);
         if (!$obj->save()) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Failed to invalidate callback ID ' . $id);
             return false;

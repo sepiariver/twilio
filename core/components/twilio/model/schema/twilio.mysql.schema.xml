@@ -10,26 +10,7 @@
         <field key="id" dbtype="varchar" precision="255" null="false" phptype="string" />
         <field key="data" dbtype="text" null="false" phptype="json" default="[]" />
         <field key="tpl" dbtype="varchar" precision="255" null="false" phptype="string" default="" />
-        <field key="called" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
+        <field key="expires" dbtype="int" precision="20" null="false" phptype="timestamp"  default="0" />
         <field key="sender_id" dbtype="int" precision="11" attributes="unsigned" null="false" phptype="integer" />
-    </object>
-    <object
-        class="TwilioXToken"
-        table="twilio_x_tokens"
-        extends="xPDOSimpleObject">
-        <field
-            key="x_token"
-            dbtype="varchar"
-            precision="2000"
-            phptype="string" />
-        <field key="timestamp"
-            dbtype="timestamp"
-            phptype="timestamp"
-            null="false"
-            default="CURRENT_TIMESTAMP" />
-        <field key="expires"
-            dbtype="timestamp"
-            phptype="timestamp"
-            null="true" />
     </object>
 </model>
