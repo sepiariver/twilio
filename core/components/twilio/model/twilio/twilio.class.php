@@ -72,12 +72,13 @@ class Twilio
 
     /**
      * Create a Twilio Client instance
+     * Overrides any previously created instances
      */
     public function init()
     {
-        $sid = $this->getSystemSetting('account_sid', '');
-        $token = $this->getSystemSetting('auth_token', '');
-        
+        $sid = $this->getOption('account_sid');
+        $token = $this->getOption('auth_token');
+
         try {
             $this->client = new Twilio\Rest\Client($sid, $token);
         } catch (Exception $e) {
@@ -97,7 +98,7 @@ class Twilio
      *
      * @param string $phoneNumber   Phone number to lookup
      * @param array $options        Array of options
-     * @param boolean $save         Not yet implemented
+     * @param bool $save            Not yet implemented
      *
      * @return array|null           Result from API lookup
      */
@@ -136,7 +137,7 @@ class Twilio
      *
      * @param string $phoneNumber   Phone number recipient
      * @param string $message       Message body
-     * @param boolean $save         Not yet implemented
+     * @param bool $save            Not yet implemented
      * @param string $from          From number override
      *
      * @return array|null           Result from send
@@ -211,7 +212,7 @@ class Twilio
      * Get a callback
      *
      * @param string $id                    ID of callback to retrieve
-     * @param boolean $render               Flag to render or return object
+     * @param bool $render                  Flag to render or return object
      * @param string $tpl                   Override TPL passed to $this->getChunk()
      *
      * @return TwilioCallbacks|null|string  Result based on render flag.
@@ -229,7 +230,7 @@ class Twilio
         ]);
         $obj = $this->modx->getObject('TwilioCallbacks', $c);
         if (!$obj || !($obj instanceof TwilioCallbacks)) {
-            $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: No callback found for ID ' . $id);
+            $this->modx->log(modX::LOG_LEVEL_INFO, 'Twilio: No callback found for ID ' . $id);
             return ($render) ? '' : null;
         }
         $obj->set('expires', 1);
@@ -250,11 +251,18 @@ class Twilio
 
     }
 
-    public function invalidateCallback(string $id)
+    /**
+     * Invalidate a callback
+     *
+     * @param string $id            ID of callback to invalidate
+     *
+     * @return bool|TwilioCallbacks Success or fail or object
+     */
+    public function invalidateCallback(string $id, bool $returnObj = false)
     {
         if (empty($id)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing callback ID to invalidate.');
-            return ($render) ? '' : null;
+            return false;
         }
         $obj = $this->modx->getObject('TwilioCallbacks', ['id' => $id]);
         if (!$obj || !($obj instanceof TwilioCallbacks)) {
@@ -266,11 +274,12 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Failed to invalidate callback ID ' . $id);
             return false;
         }
-        return true;
+        return ($returnObj) ? $obj : true;
     }
 
     /**
      * Debugging
+     * Profoundly flawed but mostly works
      *
      * @param array $properties
      * @return string|void
@@ -302,12 +311,16 @@ class Twilio
         $option = $default;
         if (!empty($key) && is_string($key)) {
             if (is_array($options) && array_key_exists($key, $options)) {
+                // Simple array access
                 $option = $options[$key];
             } elseif (is_array($options) && array_key_exists("{$this->namespace}.{$key}", $options)) {
+                // Namespaced properties like formit->config
                 $option = $options["{$this->namespace}.{$key}"];
             } elseif (array_key_exists($key, $this->options)) {
+                // Instance config
                 $option = $this->options[$key];
             } elseif (array_key_exists("{$this->namespace}.{$key}", $this->modx->config)) {
+                // System settings
                 $option = $this->modx->getOption("{$this->namespace}.{$key}");
             }
         }
@@ -372,6 +385,7 @@ class Twilio
 
             return $chunk->process($phs, $content);
         }
+        // Not strictly necessary but helpful in common error scenario
         if ($this->modx->getCount('modChunk', ['name' => $tpl]) !== 1) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: no Chunk with name ' . $tpl);
             return '';
