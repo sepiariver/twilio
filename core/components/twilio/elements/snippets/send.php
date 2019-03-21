@@ -5,7 +5,22 @@
  * Send SMS
  *
  * OPTIONS:
- * &debug (string) print|log    Enable debug output. Default ''
+ * `&number` (string)             Phone number to lookup
+ * `&country` (string)            ISO country code per http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2. Default 'US'.
+ * `&message` (string)            Message to send. Default ''.
+ * `&type` (string)               Optional lookup type. Twilio supports carrier|caller-name. Default ''.
+ *
+ * `&callbackUrl` (string)        URL at which to render callbacks. Link will be created and appended to message. Default ''.
+ * `&callbackFields` (string)     Comma-separated list of properties to include in callback data. Default ''.
+ * `&callbackGetParam` (string)   Get parameter to look for callback ID. Default 'cbid'.
+ *
+ * `&callbackTpl` (string)        Template Chunk for rendering the callback. Default ''.
+ * `&callbackLinkTpl`             Template Chunk for link at end of message. Default '@INLINE [[+callback_link]]'.
+ * `&errorTpl` (string)           Template Chunk for error. Default '@INLINE Error sending SMS.'
+ * `&successTpl` (string)         Template Chunk for success. Default 'twilio.sent_result'.
+ *
+ * `&successPlaceholder` (string) Optional placeholder to which to send the output. Default 'twilio_output'.
+ * `&debug` (string) print|log    Enable debug output. Default ''.
  *
  * @var modX $modx
  * @var array $props

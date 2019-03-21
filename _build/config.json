@@ -3,7 +3,7 @@
     "lowCaseName": "twilio",
     "description": "Twilio integration for MODX CMS.",
     "author": "YJ Tso <info@sepiariver.com>",
-    "version": "0.0.1-dev1",
+    "version": "0.0.1-beta1",
     "package": {
         "elements": {
             "chunks": [{
@@ -22,12 +22,6 @@
             },{
                 "name": "twilio.getCallback",
                 "file": "get_callback.php"
-            }],
-            "plugins": [{
-                "name": "twilio",
-                "file": "twilio.php",
-                "events": [
-                ]
             }]
         },
         "systemSettings": [{
@@ -42,11 +36,6 @@
             },
             {
                 "key": "sms_sender",
-                "area": "twilio",
-                "value": ""
-            },
-            {
-                "key": "jwt_key",
                 "area": "twilio",
                 "value": ""
             }
