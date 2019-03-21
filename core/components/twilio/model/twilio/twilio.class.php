@@ -60,8 +60,6 @@ class Twilio
             'jsUrl' => $assetsUrl . 'js/',
             'cssUrl' => $assetsUrl . 'css/',
             'connectorUrl' => $assetsUrl . 'connector.php',
-            'jwtLeeway' => 60,
-            'jwtKeyMinLength' => 32,
             'callbackIdLength' => 32,
             'callbackDefaultExpires' => time() + (3 * 24 * 60 * 60), // 3 days
         ), $options);
@@ -77,16 +75,11 @@ class Twilio
      */
     public function init()
     {
+        $sid = $this->getSystemSetting('account_sid', '');
+        $token = $this->getSystemSetting('auth_token', '');
+        
         try {
-            $config = [
-                'account_sid' => $this->getSystemSetting('account_sid', ''),
-                'auth_token' => $this->getSystemSetting('auth_token', ''),
-                'sending_phone' => $this->getSystemSetting('sending_phone', ''),
-                'jwt_key' => $this->getSystemSetting('jwt_key', ''),
-            ];
-
-            $this->client = new Twilio\Rest\Client($config['account_sid'], $config['auth_token']);
-
+            $this->client = new Twilio\Rest\Client($sid, $token);
         } catch (Exception $e) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, $e->getMessage());
         }
