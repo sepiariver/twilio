@@ -5,7 +5,12 @@
  * Get a callback and render
  *
  * OPTIONS:
- * &debug (string) print|log    Enable debug output. Default ''
+ * `&callbackGetParam` (string) Get parameter to look for callback ID. Default 'cbid'.
+ * `&id` (string)               Unique ID of callback. Default ''.
+ * `&tpl` (string)              Template Chunk to store as rendering for callback. Default ''.
+ * `&errorTpl` (string)         Template Chunk for error. Default '@INLINE '.
+ * `&toPlaceholder` (string)    Optional placeholder to which to send the output. Default ''.
+ * `&debug` (string) print|log  Enable debug output. Default ''.
  *
  * @var modX $modx
  * @var array $props

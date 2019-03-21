@@ -68,9 +68,19 @@ Send an SMS. The following properties can be submitted via a [FormIt](https://mo
 
 Any `twilio.` namespaced properties of the FormIt call (if using as hook) or the `$scriptProperties` of the twilio.send Snippet call, will be set as placeholders in the output `errorTpl` Chunk. The `successTpl` Chunk gets the results of the Twilio Programmable SMS API call.
 
+### twilio.getCallback
+
+Render a callback. Call this Snippet on the Resource that responds at the URL that was sent/distributed.
+
+* `&callbackGetParam` (string) Get parameter to look for callback ID. Default 'cbid'.
+* `&id` (string)               Unique ID of callback. Default ''.
+* `&tpl` (string)              Template Chunk to store as rendering for callback. Default ''.
+* `&errorTpl` (string)         Template Chunk for error. Default '@INLINE '.
+* `&toPlaceholder` (string)    Optional placeholder to which to send the output. Default ''.
+* `&debug` (string) print|log  Enable debug output. Default ''.
+
 ## Considerations
 
 This Extra is a work-in-progress. The code is managed [on Github](https://github.com/sepiariver/twilio). Feel free to start [Issue threads](https://github.com/sepiariver/twilio) to discuss and contribute to the roadmap.
-
 
 Thanks to you, for using MODX and the Twilio Extra :D

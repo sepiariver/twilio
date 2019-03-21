@@ -43,6 +43,5 @@
     },
     "database": {
         "tables": ["TwilioCallbacks"]
-    },
-    "extensionPackage": {}
+    }
 }
