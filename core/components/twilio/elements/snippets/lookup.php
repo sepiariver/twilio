@@ -46,21 +46,22 @@ if (!($twilio instanceof Twilio) || !$twilio->init()) {
 
 /** @var Sterc\FormIt\Hook */
 if ($hook && $hook->formit && is_array($hook->formit->config)) {
-    $props = $hook->getValues();
     foreach ($hook->formit->config as $k => $v) {
         if (strpos($k, $twilio->namespace) === 0) {
             $props[substr($k, strlen($twilio->namespace . '.'))] = $v;
         }
     }
+    $formData = $hook->getValues();
     $isFormIt = true;
 } else {
     $props = $scriptProperties;
+    $formData = [];
     $isFormIt = false;
 }
 
 // OPTIONS
-$number = $twilio->getOption('number', $props, '');
-$country = $twilio->getOption('country', $props, 'US', true);
+$number = ($hook) ? $twilio->getOption('number', $formData, '') : $twilio->getOption('number', $props, '');
+$country = ($hook) ? $twilio->getOption('country', $formData, 'US', true) : $twilio->getOption('country', $props, 'US', true);
 $type = $twilio->getOption('type', $props, '');
 $errorTpl = $twilio->getOption('errorTpl', $props, '@INLINE Number lookup failed.');
 $successTpl = $twilio->getOption('successTpl', $props, 'twilio.lookup_result');

@@ -3,7 +3,7 @@
     "lowCaseName": "twilio",
     "description": "Twilio integration for MODX CMS.",
     "author": "YJ Tso <info@sepiariver.com>",
-    "version": "0.0.1-beta1",
+    "version": "0.0.2-beta1",
     "package": {
         "elements": {
             "chunks": [{

@@ -55,7 +55,6 @@ if (!($twilio instanceof Twilio) || !$twilio->init()) {
 
 /** @var Sterc\FormIt\Hook */
 if ($hook && $hook->formit && is_array($hook->formit->config)) {
-    $props = $hook->getValues();
     foreach ($hook->formit->config as $k => $v) {
         if (strpos($k, $twilio->namespace) === 0) {
             $props[substr($k, strlen($twilio->namespace . '.'))] = $v;
@@ -94,8 +93,10 @@ $phone_number = $twilio->lookup($number, $options);
 if (!empty($phone_number['phoneNumber'])) {
     if (filter_var($callbackUrl, FILTER_VALIDATE_URL) !== false) {
         $callbackData = [];
+        $formData = ($hook) ? $hook->getValues() : [];
+        $formData = array_merge($formData, $props);
         foreach ($callbackFields as $field) {
-            $callbackData[$field] = $twilio->getOption($field, $props, '');
+            $callbackData[$field] = $twilio->getOption($field, $formData, '');
         }
         $callback = $twilio->createCallback($callbackData, $callbackTpl, $modx->user->id);
         if ($callback) {
