@@ -211,13 +211,14 @@ class Twilio
     /**
      * Get a callback
      *
-     * @param string $id                    ID of callback to retrieve
-     * @param bool $render                  Flag to render or return object
-     * @param string $tpl                   Override TPL passed to $this->getChunk()
+     * @param string $id        ID of callback to retrieve
+     * @param string $tpl       Override TPL passed to $this->getChunk()
+     * @param bool $render      Flag to render or return object
+     * @param bool $invalidate  Flag to invalidate callback after retrieval
      *
      * @return TwilioCallbacks|null|string  Result based on render flag.
      */
-    public function getCallback(string $id, string $tpl = '', $render = true)
+    public function getCallback(string $id, string $tpl = '', $render = true, $invalidate = true)
     {
         if (empty($id)) {
             $this->modx->log(modX::LOG_LEVEL_ERROR, 'Twilio: Missing callback ID.');
@@ -233,8 +234,11 @@ class Twilio
             $this->modx->log(modX::LOG_LEVEL_INFO, 'Twilio: No callback found for ID ' . $id);
             return ($render) ? '' : null;
         }
-        $obj->set('expires', 1);
-        $invalidated = $obj->save();
+        $invalidated = false;
+        if ($invalidate) {
+            $obj->set('expires', 1);
+            $invalidated = $obj->save();
+        }
         if ($render) {
             $data = $obj->get('data');
             if (!is_array($data)) $data = [];

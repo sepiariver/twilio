@@ -73,6 +73,7 @@ Any `twilio.` namespaced properties of the FormIt call (if using as hook) or the
 Render a callback. Call this Snippet on the Resource that responds at the URL that was sent/distributed.
 
 * `&callbackGetParam` (string) Get parameter to look for callback ID. Default 'cbid'.
+* `&invalidateCallback` (bool) Flag to invalidate callback after retrieval.
 * `&id` (string)               Unique ID of callback. Default ''.
 * `&tpl` (string)              Template Chunk to store as rendering for callback. Default ''.
 * `&errorTpl` (string)         Template Chunk for error. Default '@INLINE '.

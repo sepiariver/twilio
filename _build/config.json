@@ -3,23 +3,23 @@
     "lowCaseName": "twilio",
     "description": "Twilio integration for MODX CMS.",
     "author": "YJ Tso <info@sepiariver.com>",
-    "version": "0.0.2-beta1",
+    "version": "0.0.3-beta1",
     "package": {
         "elements": {
             "chunks": [{
                 "name": "twilio.lookup_result",
                 "file": "lookup_result.html"
-            },{
+            }, {
                 "name": "twilio.sent_result",
                 "file": "sent_result.html"
             }],
             "snippets": [{
                 "name": "twilio.lookup",
                 "file": "lookup.php"
-            },{
+            }, {
                 "name": "twilio.send",
                 "file": "send.php"
-            },{
+            }, {
                 "name": "twilio.getCallback",
                 "file": "get_callback.php"
             }]

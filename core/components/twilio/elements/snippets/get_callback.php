@@ -6,6 +6,7 @@
  *
  * OPTIONS:
  * `&callbackGetParam` (string) Get parameter to look for callback ID. Default 'cbid'.
+ * `&invalidateCallback` (bool) Flag to invalidate callback after retrieval.
  * `&id` (string)               Unique ID of callback. Default ''.
  * `&tpl` (string)              Template Chunk to store as rendering for callback. Default ''.
  * `&errorTpl` (string)         Template Chunk for error. Default '@INLINE '.
@@ -47,6 +48,7 @@ $props = $scriptProperties;
 
 // OPTIONS
 $callbackGetParam = $twilio->getOption('callbackGetParam', $props, 'cbid', true);
+$invalidateCallback = $twilio->getOption('invalidateCallback', $props, true);
 $id = $twilio->getOption('id', $props, '');
 $tpl = $twilio->getOption('tpl', $props, '');
 $errorTpl = $twilio->getOption('errorTpl', $props, '@INLINE ', true);
@@ -61,7 +63,7 @@ if (empty($id)) {
     }
 }
 
-$callback = $twilio->getCallback($id, $tpl);
+$callback = $twilio->getCallback($id, $tpl, true, $invalidateCallback);
 
 if (!empty($debug)) {
     return $twilio->debug([
